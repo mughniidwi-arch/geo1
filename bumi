@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>GeoQuiz Splash</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:ital,wght@0,300;0,400;1,300&display=swap');
+
+- { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+width: 100vw;
+height: 100vh;
+overflow: hidden;
+display: flex;
+align-items: center;
+justify-content: center;
+background: linear-gradient(175deg,
+#0a2a6e 0%,
+#1a5abf 20%,
+#2e8fe8 45%,
+#55b8f5 68%,
+#a8d8f8 85%,
+#ddeeff 100%
+);
+font-family: ‘Exo 2’, sans-serif;
+}
+
+/* ── FLOATING CLOUDS (background) ── */
+.cloud {
+position: fixed;
+border-radius: 999px;
+background: rgba(255,255,255,0.22);
+filter: blur(18px);
+pointer-events: none;
+z-index: 0;
+}
+.c1 { width: 320px; height: 80px;  top: 12%;  left: -60px;  animation: drift 18s linear infinite; }
+.c2 { width: 200px; height: 55px;  top: 25%;  left: -30px;  animation: drift 24s linear infinite 4s; }
+.c3 { width: 280px; height: 65px;  top: 60%;  right: -80px; animation: driftR 20s linear infinite 2s; }
+.c4 { width: 160px; height: 45px;  top: 72%;  right: -40px; animation: driftR 15s linear infinite 7s; }
+.c5 { width: 380px; height: 90px;  bottom: 8%; left: -100px; animation: drift 28s linear infinite 1s; }
+
+@keyframes drift  { from { transform: translateX(0); } to { transform: translateX(120vw); } }
+@keyframes driftR { from { transform: translateX(0); } to { transform: translateX(-120vw); } }
+
+/* ── SUN GLOW (top right) ── */
+#sun {
+position: fixed;
+top: -80px; right: -80px;
+width: 320px; height: 320px;
+border-radius: 50%;
+background: radial-gradient(circle, rgba(255,240,180,0.6) 0%, rgba(255,200,80,0.2) 50%, transparent 75%);
+z-index: 0;
+pointer-events: none;
+}
+
+/* ── SCENE ── */
+#scene {
+position: relative;
+z-index: 2;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 20px;
+animation: scene-fade-out 0.5s ease 3.6s forwards;
+}
+
+@keyframes scene-fade-out { to { opacity: 0; } }
+
+/* ── TITLE (above earth) ── */
+#title {
+font-family: ‘Orbitron’, monospace;
+font-weight: 900;
+font-size: clamp(30px, 9vw, 46px);
+color: #fff;
+letter-spacing: 5px;
+text-shadow:
+0 2px 8px rgba(0,50,150,0.4),
+0 0 30px rgba(255,255,255,0.5);
+opacity: 0;
+animation: rise 0.8s cubic-bezier(.22,1,.36,1) 0.3s forwards;
+}
+
+#subtitle {
+font-weight: 300;
+font-size: clamp(11px, 3vw, 14px);
+color: rgba(220,240,255,0.9);
+letter-spacing: 5px;
+text-transform: uppercase;
+opacity: 0;
+animation: rise 0.7s ease 0.7s forwards;
+margin-top: -10px;
+}
+
+@keyframes rise {
+from { opacity: 0; transform: translateY(16px); }
+to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── EARTH CONTAINER ── */
+#earth-wrap {
+position: relative;
+width: 210px;
+height: 210px;
+display: flex;
+align-items: center;
+justify-content: center;
+animation: earth-entrance 1.2s cubic-bezier(.22,1,.36,1) 0.9s both,
+earth-zoom-fwd 0.9s cubic-bezier(.4,0,1,1) 2.8s forwards;
+}
+
+@keyframes earth-entrance {
+from { transform: scale(0.2) translateY(40px); opacity: 0; }
+to   { transform: scale(1) translateY(0);       opacity: 1; }
+}
+
+@keyframes earth-zoom-fwd {
+from { transform: scale(1);   opacity: 1; }
+to   { transform: scale(9);   opacity: 0; }
+}
+
+/* ── EARTH SPHERE ── */
+#earth {
+width: 180px;
+height: 180px;
+border-radius: 50%;
+position: relative;
+overflow: hidden;
+background: linear-gradient(135deg, #1a6bbf 0%, #0d4fa0 40%, #083580 100%);
+box-shadow:
+inset -30px -20px 60px rgba(0,0,0,.45),
+inset 12px 12px 35px rgba(100,180,255,.2),
+0 0 50px rgba(40,130,255,.5),
+0 10px 40px rgba(0,0,0,.3);
+}
+
+/* Ocean shimmer */
+#earth-ocean {
+position: absolute; inset: 0;
+border-radius: 50%;
+background:
+radial-gradient(ellipse 80% 40% at 50% 30%, rgba(100,200,255,.25) 0%, transparent 70%);
+animation: shimmer 4s ease-in-out infinite alternate;
+}
+@keyframes shimmer {
+from { opacity: 0.6; }
+to   { opacity: 1; }
+}
+
+/* Land masses */
+#earth-land {
+position: absolute; inset: 0;
+border-radius: 50%;
+background:
+radial-gradient(ellipse 55px 36px at 35% 40%, #3a8c3f 0%, transparent 100%),
+radial-gradient(ellipse 32px 28px at 62% 32%, #4caf50 0%, transparent 100%),
+radial-gradient(ellipse 40px 22px at 22% 65%, #2e7d32 0%, transparent 100%),
+radial-gradient(ellipse 26px 34px at 74% 62%, #388e3c 0%, transparent 100%),
+radial-gradient(ellipse 18px 14px at 50% 80%, #1b5e20 0%, transparent 100%),
+radial-gradient(ellipse 22px 16px at 80% 38%, #43a047 0%, transparent 100%);
+animation: land-spin 12s linear infinite;
+}
+@keyframes land-spin {
+from { transform: rotate(0deg); }
+to   { transform: rotate(360deg); }
+}
+
+/* Ice caps */
+#earth-ice {
+position: absolute; inset: 0;
+border-radius: 50%;
+background:
+radial-gradient(ellipse 90px 28px at 50% 4%,  rgba(255,255,255,.75) 0%, transparent 100%),
+radial-gradient(ellipse 80px 22px at 50% 96%, rgba(255,255,255,.6)  0%, transparent 100%);
+}
+
+/* Clouds */
+#earth-clouds {
+position: absolute; inset: 0;
+border-radius: 50%;
+background:
+radial-gradient(ellipse 50px 18px at 40% 25%, rgba(255,255,255,.6) 0%, transparent 100%),
+radial-gradient(ellipse 30px 12px at 72% 48%, rgba(255,255,255,.5) 0%, transparent 100%),
+radial-gradient(ellipse 42px 14px at 18% 58%, rgba(255,255,255,.45) 0%, transparent 100%),
+radial-gradient(ellipse 25px 10px at 60% 75%, rgba(255,255,255,.4) 0%, transparent 100%);
+animation: cloud-spin 18s linear infinite;
+}
+@keyframes cloud-spin {
+from { transform: rotate(0deg); }
+to   { transform: rotate(360deg); }
+}
+
+/* Atmosphere halo */
+#earth-atmo {
+position: absolute; inset: -12px;
+border-radius: 50%;
+background: radial-gradient(circle,
+transparent 58%,
+rgba(100,200,255,.35) 72%,
+rgba(50,150,255,.12) 85%,
+transparent 100%);
+pointer-events: none;
+}
+
+/* ── ORBIT RING ── */
+#orbit-ring {
+position: absolute;
+width: 220px; height: 220px;
+border-radius: 50%;
+border: 1.5px solid rgba(255,255,255,.3);
+animation: ring-appear 0.5s ease 1.0s both;
+transform: rotateX(65deg);
+}
+@keyframes ring-appear {
+from { opacity: 0; } to { opacity: 1; }
+}
+
+/* Satellite dot */
+#satellite {
+position: absolute;
+width: 10px; height: 10px;
+background: #fff;
+border-radius: 50%;
+top: -5px; left: 105px;
+box-shadow: 0 0 8px #fff, 0 0 16px rgba(150,220,255,.9);
+transform-origin: 0 110px;
+animation: sat-orbit 3s linear infinite, ring-appear 0.5s ease 1.0s both;
+}
+@keyframes sat-orbit {
+from { transform: rotate(0deg); }
+to   { transform: rotate(360deg); }
+}
+
+/* ── LOADING BAR ── */
+#loading-wrap {
+width: 160px;
+height: 3px;
+background: rgba(255,255,255,.2);
+border-radius: 99px;
+overflow: hidden;
+opacity: 0;
+animation: rise 0.5s ease 1.8s forwards;
+}
+#loading-bar {
+height: 100%;
+width: 0;
+background: linear-gradient(90deg, #fff, #a8e0ff);
+border-radius: 99px;
+box-shadow: 0 0 8px rgba(255,255,255,.8);
+animation: load-fill 1.2s ease 2.0s forwards;
+}
+@keyframes load-fill {
+from { width: 0%; } to { width: 100%; }
+}
+
+/* ── WHITE FLASH (transition) ── */
+#flash {
+position: fixed; inset: 0;
+background: #fff;
+opacity: 0;
+z-index: 99;
+pointer-events: none;
+animation: do-flash 0.45s ease 3.5s forwards;
+}
+@keyframes do-flash {
+0%   { opacity: 0; }
+50%  { opacity: 1; }
+100% { opacity: 0; }
+}
+</style>
+
+</head>
+<body>
+
+<div id="sun"></div>
+<div class="cloud c1"></div>
+<div class="cloud c2"></div>
+<div class="cloud c3"></div>
+<div class="cloud c4"></div>
+<div class="cloud c5"></div>
+
+<div id="scene">
+  <div id="title">GEOQUIZ</div>
+  <div id="subtitle">World Knowledge Challenge</div>
+
+  <div id="earth-wrap">
+    <div id="orbit-ring"></div>
+    <div id="satellite"></div>
+    <div id="earth">
+      <div id="earth-ocean"></div>
+      <div id="earth-land"></div>
+      <div id="earth-ice"></div>
+      <div id="earth-clouds"></div>
+    </div>
+    <div id="earth-atmo"></div>
+  </div>
+
+  <div id="loading-wrap"><div id="loading-bar"></div></div>
+</div>
+
+<div id="flash"></div>
+
+<script>
+  setTimeout(() => {
+    window.location.hash = 'done';
+    try { window.AppInventor.setWebViewString('done'); } catch(e) {}
+  }, 3900);
+</script>
+
+</body>
+</html>
